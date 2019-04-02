@@ -14,7 +14,7 @@
 
 	<select id="selBoardList" resultType="hashmap">
 		<![CDATA[
-			Select * from TB_SUP_BBS 
+			Select * from TB_SUP_BBS order by NO Desc
 		]]>
 	</select>
 </mapper>

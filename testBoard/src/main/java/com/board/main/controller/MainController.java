@@ -24,6 +24,7 @@ public class MainController {
 	public String selectBoardList(Model model) {
 		List<Map<String,Object>>resultList = boardService.selectBoardList();
 		model.addAttribute("list",resultList);
-		return "boardList";
+		System.out.println(resultList);
+		return "board/boardList";
 	}
 }
