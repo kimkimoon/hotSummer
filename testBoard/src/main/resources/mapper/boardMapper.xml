@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardMapper">
+	
+	<!-- <resultMap type="com.board.VO.BoardVO" id="boardVO">
+		<result property="no" column="no"/>
+		<result property="titl" column="titl"/>
+		<result property="cntt" column="wrt_nm"/>
+		<result property="orn_no" column="orn_no"/>
+		<result property="inqry_cnt" column="inqry_cnt"/>
+		<result property="reg_dt" column="reg_dt"/>
+	</resultMap> -->
+
+	<select id="selBoardList" resultType="hashmap">
+		<![CDATA[
+			Select * from TB_SUP_BBS 
+		]]>
+	</select>
+</mapper>
