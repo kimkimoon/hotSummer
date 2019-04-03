@@ -6,16 +6,25 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.board.mapper.BoardMapper;
+import com.board.main.dao.BoardDAO;
+//import com.board.mapper.BoardMapper;
 
 @Service
-public class BoardService {
+public class BoardService implements ServiceBoard {
 
 	@Autowired
-	BoardMapper boardMapper;
+	BoardDAO boardDAO;
 	
 	public List<Map<String,Object>>selectBoardList(){
-		List<Map<String,Object>> resultList = boardMapper.selectBoardList();
+		List<Map<String,Object>> resultList = boardDAO.selectList();
 		return resultList;
 	}
+
+	public int writeBoard(Map<String, Object> params) {
+		int result = 0;
+		result = boardDAO.insertBoard(params);
+		return result;
+	}
+	
+	
 }

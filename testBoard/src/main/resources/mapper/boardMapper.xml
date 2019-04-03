@@ -17,4 +17,13 @@
 			Select * from TB_SUP_BBS order by NO Desc
 		]]>
 	</select>
+	
+	<insert id="inBoard" parameterType="hashmap">
+		<![CDATA[
+			Insert into TB_SUP_BBS 
+			(NO,TITL,CNTT,WRT_NM,INQRY_CNT,REG_DT) 
+			values(SQ_SUP_BBS.nextval,#{TITL},#{CNTT},#{WRT_NM},0,SYSDATE)
+		]]>
+	</insert>
+	
 </mapper>

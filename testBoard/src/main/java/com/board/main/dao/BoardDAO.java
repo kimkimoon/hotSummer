@@ -8,8 +8,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-public class BoardDAO {
+@Repository("boardMapper")
+public class BoardDAO implements DAO {
 	
 	protected Log log = LogFactory.getLog(BoardDAO.class);
 	
@@ -23,9 +26,16 @@ public class BoardDAO {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public List selectList(String queryId) {
-		printQueryId(queryId);
-		return sqlSession.selectList(queryId);
+	public List selectList() {
+		return sqlSession.selectList("boardMapper.selBoardList");
 	}
+
+	@Transactional
+	public int insertBoard(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("boardMapper.inBoard",params);
+	}
+	
+	
 	
 }
