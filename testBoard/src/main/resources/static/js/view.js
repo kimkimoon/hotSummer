@@ -1,12 +1,17 @@
 $(document).ready(function(){
-	page();
 	//https://webclub.tistory.com/189 참조
+	var mode = "default";
+	var boardNO = 0;
 	$(".clickPop").click(function(){
 		var move = $(this).attr('href'); //clickPop의 href 값 가져오기(#layer)
-		layer_popup(move);
+		var id = $(this).attr('id');
+		var name = $(this).attr('name');
+		mode = id; //수정,댓글
+		layer_popup(move,id,name);
 	});
 	
-	function layer_popup(mo){
+	
+	function layer_popup(mo,type,NO){
 		var la = $(mo); 
 		var dim = la.prev().hasClass('dimBg');
 			dim ? $('.writePop').fadeIn() : la.fadeIn();
@@ -15,7 +20,6 @@ $(document).ready(function(){
         	docWidth = $(document).width(),
         	docHeight = $(document).height();
 		
-		//alert($laWidth+","+$laHeight+","+docWidth+","+docHeight);
 		if ($laHeight < docHeight || $laWidth < docWidth) {
 			la.css({
 				 marginTop: -$laHeight /2,
@@ -24,6 +28,21 @@ $(document).ready(function(){
 		}else {
 			la.css({top: 0, left: 0});
         }
+		
+		//수정일때
+		if(type=="modifyBtn"){
+			
+			var title = $("#title"+NO).text();
+			var useName = $("#usName"+NO).text();
+			var content = $("#content"+NO).text();
+			boardNO = NO;
+			$("#CNTT").val(content);
+			$("#WRT_NM").val(useName);
+			$("#TITL").val(title);
+			$("#NO").val(NO);
+		}else if(type=="replyBtn"){ //댓글
+			boardNO = NO;
+		}
 		
 		//닫기
 		$("#popClose").click(function(){
@@ -36,99 +55,38 @@ $(document).ready(function(){
 	//쓰기
 	$("#writeGo").click(function(){	
 		//유효성 검사
-		
 		//
+		var url = '/board/write';
+	    if(mode=="modifyBtn"){
+			url = '/board/modify';
+		}else if(mode=="replyBtn"){
+			url = '/board/reply'
+		}
+	    
+	    
+	    var TITL = $("#TITL").val();
+	    var CNTT = $("#CNTT").val();
+	    var WRT_NM = $("#WRT_NM").val();
+	    var datas={TITL:TITL,
+	    		   CNTT:CNTT,
+	    		   WRT_NM:WRT_NM,
+	    		   NO:boardNO};
+
 		$.ajax({
-			type : 'post',
+			type : 'POST',
 			contentType: 'application/json; charset=UTF-8',
-			data : JSON.stringify($('form[name="contentForm"]').serializeComponent()),
-			url  : '/board/write',
+			data : JSON.stringify(datas),
+			url  : url,
 			dataType   : 'json',
 			success:function(data){
-				if(data == 1 ) {
-		            alert('저장 하였습니다.');
-		            location.reload();                   
-		        } else {
-		            alert('저장중 오류가 발생 하였습니다.');
-		            return;
-		        }
+				alert("저장되었습니다.");
+				location.reload();
 			}
 		})
-	});
-	
+	});	
 	
 	
 })
-//동적 페이징 적용해보기
-	function page(){
-		//https://soye0n.tistory.com/118 참조
-		
-		var row_number = 12; //한페이지에 출력할 숫자
-		var uTr = jQuery('tbody tr'); 
-		var totalRow = uTr.length/2; //총게시물 숫자
-		//alert(totalRow);
-		var pagesNum = 0;
-		if(totalRow % row_number == 0){ //총게시물 숫자 % 한페이지 출력할 숫자가 0이면
-			pagesNum = totalRow / row_number; 
-		}else{
-			pagesNum = (totalRow / row_number)+1;
-			pagesNum = Math.floor(pagesNum++); //소수점 버리기
-		}
-		var calNum = 0;
-		
-		//
-		jQuery('#pageArea').append("<li class=\"page-item\"><a class=\"page-link\" id=\"prev\" style=\"cursor:pointer\">Prev</a></li>");
-		for(var i=1; i<=pagesNum;i++){
-			jQuery('#pageArea').append("<li class=\"page-item\"><a class=\"page-link\" style=\"cursor:pointer\">"+i+"</a></li>");
-			jQuery('#pageArea li:nth-child(2)').attr("id","active");
-			jQuery('#pageArea a').attr("id","pageLink");
-		}
-		jQuery("#pageArea").append("<li class=\"page-item\"><a class=\"page-link\" id=\"next\" style=\"cursor:pointer\">Next</a></li>");
-		
-		test(0);
-		function test(num){
-			//alert(num+","+num+2);
-			uTr.each(function(i){
-				//jQuery(this).hide();
-				var className =  jQuery(this).attr("class");
-				if((i+1)>=row_number*num && (i+1)+1<=row_number*(num+2)){
-					if(className=="mainTr"){
-						uTr.eq(i).show();	
-					}else if(className=="subTr"){
-						uTr.eq(i).hide();
-					}
-				}else{
-					uTr.eq(i).hide();
-				}
-			}); //now_number 를뺀 나머지는 hide
-		}
-	
-		jQuery("#pageArea a").click('#pageLink',function(e){
-			//e.preventDefault(); //이벤트 중지 메서드
-			//uTr.hide();
-			var page = jQuery(this).text();
-			var temp = page-1;
-			if(parseInt(page)==1){
-				test(parseInt(page)-1);
-			}else{
-				test(parseInt(page));
-			}
-			
-			var start = temp*row_number;
-			var current_link = temp;
-			/*
-			jQuery("#pageArea li").remove("active");
-			jQuery(this).parent().attr("id","active");
-			for(var i=0;i<row_number;i++){
-				
-			}*/
-		});
-		//
-		
-	}
-
-
-
 
 
 

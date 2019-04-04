@@ -14,26 +14,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository("boardMapper")
 public class BoardDAO implements DAO {
 	
-	protected Log log = LogFactory.getLog(BoardDAO.class);
-	
 	@Autowired
 	private SqlSessionTemplate sqlSession;
-	
-	protected void printQueryId(String queryId) {
-		if(log.isDebugEnabled()) {
-			log.debug("\t QueryId \t: " + queryId);
-		}
-	}
+
 
 	@SuppressWarnings("rawtypes")
-	public List selectList() {
-		return sqlSession.selectList("boardMapper.selBoardList");
+	public List selectList(int page) {
+		return sqlSession.selectList("boardMapper.selectBoardList",page);
 	}
 
 	@Transactional
-	public int insertBoard(Map<String, Object> params) {
+	public int insertBoard(Map<String, Object> datas) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert("boardMapper.inBoard",params);
+		return sqlSession.insert("boardMapper.inBoard",datas);
+	}
+
+	public int hitUP(int NO) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.hitUp",NO);
+	}
+
+	public int modifyBoard(Map<String, Object> datas) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.modifyQuery",datas);
+	}
+
+	public int replyBoard(Map<String, Object> datas) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("boardMapper.replyInsert",datas);
 	}
 	
 	

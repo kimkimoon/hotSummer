@@ -5,7 +5,10 @@ import java.util.Map;
 
 public interface ServiceBoard {
 
-	public List<Map<String,Object>>selectBoardList();
+	public List<Map<String,Object>>selectBoardList(int page);
 	
-	public int writeBoard(Map<String, Object> params);
+	public int writeBoard(Map<String, Object> datas);
+	public void hitUP(int NO);
+	public void modifyBoard(Map<String, Object> datas);
+	public void replyBoard(Map<String, Object> datas); 
 }

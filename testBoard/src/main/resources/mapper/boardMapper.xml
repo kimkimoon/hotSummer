@@ -12,12 +12,42 @@
 		<result property="reg_dt" column="reg_dt"/>
 	</resultMap> -->
 
-	<select id="selBoardList" resultType="hashmap">
+
+	<select id="selectBoardList" parameterType="Integer" resultType="hashmap">
 		<![CDATA[
-			Select * from TB_SUP_BBS order by NO Desc
+			SELECT
+				RN,
+				NO,
+				ORN_NO,
+				LPAD('-', 4*(LEVEL-1))||TITL AS TITL,
+				CNTT,
+				WRT_NM,
+				INQRY_CNT,
+				REG_DT,
+				TOTAL_PAGE,
+				LEVEL AS LE
+			FROM(
+				SELECT
+					A.*
+				FROM(	
+					SELECT
+						CEIL(RN/10) AS PAGE_NO,
+						CEIL(TOTAL_CNT/10) AS TOTAL_PAGE,
+						A.*
+					FROM(	
+						SELECT
+							ROW_NUMBER() OVER(ORDER BY NO DESC) AS RN,
+							COUNT(NO) OVER() TOTAL_CNT,
+							
+							A.*
+						FROM TB_SUP_BBS A
+					) A
+				) A WHERE PAGE_NO=#{page}
+			) A
+			START WITH ORN_NO IS NULL
+			CONNECT BY PRIOR NO=ORN_NO
 		]]>
 	</select>
-	
 	<insert id="inBoard" parameterType="hashmap">
 		<![CDATA[
 			Insert into TB_SUP_BBS 
@@ -25,5 +55,28 @@
 			values(SQ_SUP_BBS.nextval,#{TITL},#{CNTT},#{WRT_NM},0,SYSDATE)
 		]]>
 	</insert>
-	
+	<!-- reply -->
+	<insert id="replyInsert" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO TB_SUP_BBS
+			(NO,TITL,CNTT,WRT_NM,ORN_NO,INQRY_CNT,REG_DT)
+			VALUES(SQ_SUP_BBS.nextval,#{TITL},#{CNTT},#{WRT_NM},#{NO},0,SYSDATE)
+		]]>
+	</insert>
+	<!-- 클릭수 -->
+	<update id="hitUp" parameterType="Integer">
+		<![CDATA[
+			UPDATE TB_SUP_BBS SET 
+			INQRY_CNT = INQRY_CNT+1
+			WHERE NO=#{NO}
+		]]>		
+	</update>
+	<!-- 수정 -->
+	<update id="modifyQuery" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_SUP_BBS SET
+			TITL=#{TITL}, WRT_NM=#{WRT_NM}, CNTT=#{CNTT}
+			WHERE NO=#{NO}
+		]]>
+	</update>
 </mapper>
