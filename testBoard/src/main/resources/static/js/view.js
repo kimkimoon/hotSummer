@@ -55,34 +55,44 @@ $(document).ready(function(){
 	//쓰기
 	$("#writeGo").click(function(){	
 		//유효성 검사
-		//
-		var url = '/board/write';
-	    if(mode=="modifyBtn"){
-			url = '/board/modify';
-		}else if(mode=="replyBtn"){
-			url = '/board/reply'
-		}
-	    
-	    
-	    var TITL = $("#TITL").val();
+		
+		var TITL = $("#TITL").val();
 	    var CNTT = $("#CNTT").val();
 	    var WRT_NM = $("#WRT_NM").val();
-	    var datas={TITL:TITL,
-	    		   CNTT:CNTT,
-	    		   WRT_NM:WRT_NM,
-	    		   NO:boardNO};
 
-		$.ajax({
-			type : 'POST',
-			contentType: 'application/json; charset=UTF-8',
-			data : JSON.stringify(datas),
-			url  : url,
-			dataType   : 'json',
-			success:function(data){
-				alert("저장되었습니다.");
-				location.reload();
+	    if(TITL==""){
+	    	alert("제목을 입력하세요");
+	    }else if(CNTT==""){
+	    	alert("내용을 입력하세요");
+	    }else if(WRT_NM==""){
+	    	alert("이름을 입력하세요");
+	    }else{
+	    	var url = '/board/write';
+		    if(mode=="modifyBtn"){
+				url = '/board/modify';
+			}else if(mode=="replyBtn"){
+				url = '/board/reply'
 			}
-		})
+		    
+	    	var datas={TITL:TITL,
+		    		   CNTT:CNTT,
+		    		   WRT_NM:WRT_NM,
+		    		   NO:boardNO};
+
+			$.ajax({
+				type : 'POST',
+				contentType: 'application/json; charset=UTF-8',
+				data : JSON.stringify(datas),
+				url  : url,
+				dataType   : 'json',
+				success:function(data){
+					alert("저장되었습니다.");
+					location.reload();
+				}
+			});
+	    }
+
+	    
 	});	
 	
 	
